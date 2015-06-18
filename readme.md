@@ -25,7 +25,26 @@ Next, within your project root, create a `behat.yml` file, and add:
 ```
 default:
     extensions:
+        Laracasts\Behat:default:
+    extensions:
         Laracasts\Behat:
+            # env_path: .env.behat
+        Behat\MinkExtension:
+            base_url: https://bookclub.dev:443
+            default_session: laravel
+            laravel: ~
+            goutte:
+                guzzle_parameters:
+                  curl.options:
+                    CURLOPT_SSL_VERIFYPEER: false
+                    CURLOPT_CERTINFO: false
+                    CURLOPT_TIMEOUT: 120
+                  ssl.certificate_authority: false
+            selenium2:
+              wd_host: "http://192.168.10.1:4444/wd/hub"
+            browser_name: chrome
+
+
             # env_path: .env.behat
         Behat\MinkExtension:
             default_session: laravel
@@ -37,7 +56,40 @@ Here, is where we reference the Laravel extension, and tell Behat to use it as o
 This file should, like the standard `.env` file in your project root, contain any special environment variables
 for your tests (such as a special acceptance test-specific database).
 
+Also you can set the host to test if you are not running tests against localhost. Also seen below is Selenium running on my mac but if I want to run the tests inside of my homestead. It will then connect to the external (mac) Selenium server and open chrome, by default it is Firefox. Of course you would need to run 
+
+```
+composer require behat/mink-selenium2-driver
+```
+
+To add this if you want it.
+
+```
+default:
+    extensions:
+        Laracasts\Behat:
+            # env_path: .env.behat
+        Behat\MinkExtension:
+            base_url: https://mysite.dev
+            default_session: laravel
+            laravel: ~
+            selenium2:
+              wd_host: "http://192.168.10.1:4444/wd/hub"
+            browser_name: chrome
+
+```
+
+
 # 3. Write Some Features
+
+Finally run `vendor/bin/behat --init` to setup your folders.
+
+Now at the root of your app is an acceptance folder. In there is where you can place your tests. For example
+
+~~~
+features/foo.feature
+~~~
+
 
 ![example](https://dl.dropboxusercontent.com/u/774859/Work/BehatLaravelExtension/example.png)
 
